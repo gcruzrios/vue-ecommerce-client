@@ -27,6 +27,14 @@
             :class="{ error: formError.password }"
           />
         </div>
+        <div class="field">
+        <input
+          type="password"
+          placeholder="Repetir contraseña"
+          v-model="formData.repeatPassword"
+          :class="{ error: formError.repeatPassword }"
+        />
+        </div>
 
         <button
           type="submit"
@@ -70,6 +78,9 @@ export default {
       username: Yup.string().required(true),
       email: Yup.string().email(true).required(true),
       password: Yup.string().required(true),
+      repeatPassword: Yup.string()
+        .required(true)
+        .oneOf([Yup.ref("password")], true),
     });
 
     const register = async () => {
