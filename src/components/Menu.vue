@@ -20,7 +20,9 @@
         <router-link class="item" to="/login" v-if="!token">
           Iniciar sesión
         </router-link>
+
         <template v-if="token">
+          <span class="item">Usuario : {{ username }} </span>
           <router-link class="item" to="/orders">Pedidos</router-link>
           <span class="ui item cart" @click="openCart">
             <i class="shopping cart icon"></i>
@@ -38,19 +40,40 @@
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { getTokenApi, deleteTokenApi } from "../api/token";
+import { GetUserApi } from "../api/user";
 import { getCategoriesApi } from "../api/category";
+import jwtDecode from "jwt-decode";
+
 
 export default {
   name: "Menu",
   setup() {
+
     let categories = ref(null);
+    let user = ref(null);
+    let username = ref("");
+    let id_user = ref(0);
     const token = getTokenApi();
     const store = useStore();
 
+   
     onMounted(async () => {
+
+      if (token){
+        const { id } = jwtDecode(token);
+        const responseUser = await GetUserApi(id);
+        user.value = responseUser;
+        username.value = user.value.username;
+        //console.log(username.value);
+        id_user.value = id;
+        
+      }
+      
       const response = await getCategoriesApi();
       categories.value = response;
-    });
+      });
+
+    //console.log(id_user.value);
 
     const logout = () => {
       deleteTokenApi();
@@ -66,6 +89,9 @@ export default {
       logout,
       categories,
       openCart,
+      user,
+      username,
+      id_user
     };
   },
 };

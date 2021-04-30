@@ -37,3 +37,18 @@ export async function loginApi(formData) {
     return null;
   }
 }
+
+export async function GetUserApi(id) {
+  const url = ``;
+  try {
+    const response = await fetch(`${API_URL}/users/${id}`);
+    
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+
+  
+}
